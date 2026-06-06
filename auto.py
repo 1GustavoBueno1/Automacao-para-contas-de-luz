@@ -78,7 +78,10 @@ def voltar_para_selecao():
 
 def baixar_conta_da_unidade(indice):
     """Seleciona uma unidade, baixa a 2a via (se houver) e salva na pasta de contas."""
-    pagina.get_by_role("button", name="Selecionar unidade").nth(indice).click()
+    if indice <= 6:
+        pagina.get_by_role("button", name="Selecionar unidade").nth(indice).click()
+    else:
+        pagina.locator(f"ui-celesc-edit-item-card:nth-child({indice}) > .edit-item-card-wrapper > .selection-trigger > .small").click()
     # Ordem importa: 1) espera o loader sumir; 2) so entao o modal "Agora não"
     # aparece -> fecha. Se fechar antes do loader, o modal nem nasceu ainda.
     esperar_carregamento()
@@ -118,7 +121,7 @@ with sync_playwright() as play:
     pagina.goto("https://conecte.celesc.com.br/autenticacao/login")
     login()
     # Baixa e salva as 6 primeiras unidades (indices 1 a 6).
-    for indice in range(1, 7):
+    for indice in range(1, 43):
         baixar_conta_da_unidade(indice)
     print("Todas as contas foram baixadas!")
     browser.close()
